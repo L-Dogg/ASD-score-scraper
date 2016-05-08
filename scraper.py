@@ -33,7 +33,6 @@ def parsePage(page, args):
     soup = BeautifulSoup(page, 'html.parser')
     table = soup.find_all('table')[0]
     student_name = '%s %s' % (args.name[0], args.surname[0])
-    print(student_name)
     student_marks = {}
     i = 1
     for row in table.find_all('tr')[1:]:
@@ -51,13 +50,19 @@ def main():
     student_marks = parsePage(page, args)
     marksPrinter('%s %s' % (args.name[0], args.surname[0]), student_marks)
 
+def decorate(score, max_score):
+    return (bcolors.OKGREEN if score >= max_score / 2 else bcolors.FAIL)
+
 def marksPrinter(student_name, student_marks):
     print(student_name)
-    for (no, score) in student_marks:
-        if(score >= MAX_SCORE / 2):
-            print(bcolors.OKGREEN + "Lab %d\t %f" % (no, score) + bcolors.ENDC)
-        else:
-            print(bcolors.FAIL + "Lab %d\t %f" % (no, score) + bcolors.ENDC)
+    print()
+    for no, score in student_marks.items():
+        print(decorate(score, MAX_SCORE) + "Lab %d\t %0.1f" % (no, score) + bcolors.ENDC)
+
+    print()
+    print(decorate(sum(student_marks.values()), len(student_marks) * MAX_SCORE - 1)
+        + "Sum %d/%d" % (sum(student_marks.values()), len(student_marks) * MAX_SCORE - 1)
+        + bcolors.ENDC)
 
 if __name__ == '__main__':
     main()
