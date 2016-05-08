@@ -6,10 +6,12 @@ from bs4 import BeautifulSoup
 URL = "http://www.mini.pw.edu.pl/~dobrowolskip/lab/asd2lab/l16/results.html"
 USERNAME = 'student'
 PASSWORD = 'lab2asd'
+MAX_SCORE = 5.0
 
 class bcolors:
     OKGREEN = '\033[92m'
     FAIL = '\033[91m'
+    ENDC = '\033[0m'
 
 def parseArguments():
     parser = argparse.ArgumentParser(description='ASD2 Lab Scores')
@@ -47,7 +49,15 @@ def main():
     args = parseArguments()
     page = getPage()
     student_marks = parsePage(page, args)
-    print(student_marks)
+    marksPrinter('%s %s' % (args.name[0], args.surname[0]), student_marks)
+
+def marksPrinter(student_name, student_marks):
+    print(student_name)
+    for (no, score) in student_marks:
+        if(score >= MAX_SCORE / 2):
+            print(bcolors.OKGREEN + "Lab %d\t %f" % (no, score) + bcolors.ENDC)
+        else:
+            print(bcolors.FAIL + "Lab %d\t %f" % (no, score) + bcolors.ENDC)
 
 if __name__ == '__main__':
     main()
