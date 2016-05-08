@@ -1,15 +1,14 @@
-from requests import session
-
-payload = {
-    'action': 'login',
-    'username': 'student',
-    'password': 'lab2asd'
-}
+import urllib.request
 
 url = "http://www.mini.pw.edu.pl/~dobrowolskip/lab/asd2lab/l16/results.html"
+username = 'student'
+password = 'lab2asd'
+p = urllib.request.HTTPPasswordMgrWithDefaultRealm()
 
-with session() as s:
-    s.post(url, data=payload)
-    response = s.get(url)
-    print(response.headers)
-    print(response.text)
+p.add_password(None, url, username, password)
+
+handler = urllib.request.HTTPBasicAuthHandler(p)
+opener = urllib.request.build_opener(handler)
+urllib.request.install_opener(opener)
+
+page = urllib.request.urlopen(url).read()
